@@ -1,0 +1,43 @@
+/*2006 data was removed from result in case it was incomplete.*/
+WITH customer_per_month AS (SELECT DISTINCT 	
+        st.store_id,
+		DATE_TRUNC('month',r.rental_date) 
+        rental_month, r.customer_id
+          FROM rental r
+          JOIN payment p
+    		ON r.rental_id = p.rental_id
+          JOIN staff s
+    		ON p.staff_id = s.staff_id
+          JOIN store st
+    		ON s.store_id = st.store_id),
+	month_count AS (SELECT store_id, rental_month, 
+		COUNT(*) customer_count
+		FROM customer_per_month
+    	GROUP BY 1,2)
+   
+SELECT store_id,
+	DATE_PART('year',rental_month)||'-0'||
+    DATE_PART('month',rental_month) AS year_month,
+	CASE WHEN (customer_count - 
+		LAG(customer_count) OVER (ORDER BY 
+        rental_month)) IS NULL THEN 0
+    	ELSE 100*(customer_count-
+        LAG(customer_count) OVER 
+    	(ORDER BY rental_month))/customer_count 
+         END AS customer_percent_change
+   	FROM month_count
+    WHERE store_id = 1 AND (rental_month BETWEEN '2005-06-01' AND '2006-01-01')
+UNION ALL
+SELECT store_id, 
+	DATE_PART('year',rental_month)||'-0'||
+    DATE_PART('month',rental_month) AS year_month,
+	CASE WHEN (customer_count - 
+		LAG(customer_count) OVER (ORDER BY 
+        rental_month)) IS NULL THEN 0
+    	ELSE 100*(customer_count-
+        LAG(customer_count) OVER 
+    	(ORDER BY rental_month))/customer_count 
+         END AS customer_percent_change
+   	FROM month_count
+    WHERE store_id = 2 AND (rental_month BETWEEN '2005-06-01' AND '2006-01-01')
+    ORDER BY 1,2;

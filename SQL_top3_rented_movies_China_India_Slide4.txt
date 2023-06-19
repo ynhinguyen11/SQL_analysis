@@ -1,0 +1,25 @@
+WITH movie_count AS (SELECT c.country, 
+	f.title,COUNT(*) rent_count, f.rental_rate
+        FROM country c
+        JOIN city ct
+            ON c.country_id = ct.country_id
+        JOIN address a
+            ON ct.city_id = a.city_id
+        JOIN customer cu
+            ON a.address_id = cu.address_id
+        JOIN rental r
+            ON cu.customer_id = r.customer_id
+        JOIN inventory i
+            ON r.inventory_id = i.inventory_id
+        JOIN film f
+            ON i.film_id = f.film_id
+        WHERE c.country = 'China'
+            OR c.country = 'India'
+        GROUP BY 1,2,4)
+ 
+ SELECT *
+ 	FROM (SELECT country, title, rent_count, 
+        	RANK() OVER (PARTITION BY country ORDER 
+          	BY rent_count DESC) movie_rank, rental_rate
+ 	      FROM movie_count) sub
+    WHERE movie_rank <= 3;

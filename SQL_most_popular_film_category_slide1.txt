@@ -1,0 +1,72 @@
+/* Referenced solution from question 1 of Subquery Mania Quiz*/
+
+WITH category_per_country AS (SELECT c.country, 
+          ca.name category,
+          COUNT(*) category_count
+          FROM country c
+          JOIN city ct
+    		ON c.country_id = ct.country_id
+          JOIN address a
+    		ON ct.city_id = a.city_id
+          JOIN customer cu
+    		ON a.address_id = cu.address_id
+          JOIN rental r
+    		ON cu.customer_id = r.customer_id
+          JOIN inventory i
+    		ON r.inventory_id = i.inventory_id
+          JOIN film f
+    		ON i.film_id = f.film_id
+          JOIN film_category fc
+    		ON f.film_id =fc.film_id
+          JOIN category ca
+    		ON fc.category_id = ca.category_id
+          GROUP BY 1,2),
+	max_per_country AS (SELECT country, 
+          MAX(category_count) max_count
+          FROM category_per_country
+          GROUP BY 1),
+	max_w_category AS (SELECT c.country,
+          c.category, m.max_count
+		  FROM category_per_country c
+    	  JOIN max_per_country m
+    	    ON c.country = m.country AND 
+               c.category_count = m.max_count)
+
+SELECT country,
+       CASE WHEN category = 'Action' THEN 
+            max_count ELSE 0 END AS action,
+       CASE WHEN category = 'Animation' THEN 
+            max_count ELSE 0 END AS animation,
+       CASE WHEN category = 'Children' THEN 
+            max_count ELSE 0 END AS children,
+       CASE WHEN category = 'Classics' THEN 
+            max_count ELSE 0 END AS classics,
+       CASE WHEN category = 'Comedy' THEN 
+            max_count ELSE 0 END AS comedy,
+       CASE WHEN category = 'Documentary' THEN 
+            max_count ELSE 0 END AS documentary,
+       CASE WHEN category = 'Drama' THEN 
+            max_count ELSE 0 END AS drama,
+       CASE WHEN category = 'Family' THEN 
+            max_count ELSE 0 END AS family,
+       CASE WHEN category = 'Foreign' THEN 
+            max_count ELSE 0 END AS foreign,
+       CASE WHEN category = 'Games' THEN 
+            max_count ELSE 0 END AS games,
+       CASE WHEN category = 'Horror' THEN 
+            max_count ELSE 0 END AS horror,
+       CASE WHEN category = 'Music' THEN 
+            max_count ELSE 0 END AS music,
+       CASE WHEN category = 'New' THEN 
+            max_count ELSE 0 END AS new,
+       CASE WHEN category = 'Sci-Fi' THEN 
+            max_count ELSE 0 END AS sci_fi,
+       CASE WHEN category = 'Sports' THEN 
+            max_count ELSE 0 END AS sports,
+       CASE WHEN category = 'Travel' THEN 
+            max_count ELSE 0 END AS travel
+    FROM max_w_category
+    ORDER BY 2 DESC, 3 DESC, 4 DESC, 5 DESC,
+       6 DESC, 7 DESC, 8 DESC, 9 DESC, 10 DESC,
+       11 DESC, 12 DESC, 13 DESC, 14 DESC,
+       15 DESC, 16 DESC, 17 DESC
