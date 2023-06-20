@@ -14579,7 +14579,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="What-is-the-most-popular-film-category-in-each-country?">What is the most popular film category in each country?<a class="anchor-link" href="#What-is-the-most-popular-film-category-in-each-country?">&#182;</a></h2>
+<p><img src="https://www.postgresqltutorial.com/wp-content/uploads/2018/03/dvd-rental-sample-database-diagram.png" alt="DVD Rental ER Model"></p>
+
 </div>
 </div>
 </div>
@@ -14591,6 +14592,94 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="What-are-the-top-3-countries-that-rent-the-most-movies?">What are the top 3 countries that rent the most movies?<a class="anchor-link" href="#What-are-the-top-3-countries-that-rent-the-most-movies?">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%capture</span> --no-display
+<span class="o">%%</span><span class="n">sql</span>
+
+<span class="n">SELECT</span> <span class="n">country</span><span class="p">,</span> <span class="n">COUNT</span><span class="p">(</span><span class="n">rental_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">rental_count</span>
+    <span class="n">FROM</span> <span class="n">country</span> <span class="n">c</span>
+    <span class="o">--</span> <span class="n">Join</span> <span class="n">tables</span> <span class="n">to</span> <span class="n">get</span> <span class="n">columns</span> <span class="n">needed</span> <span class="k">for</span> <span class="n">analysis</span>
+    <span class="n">JOIN</span> <span class="n">city</span> <span class="n">ct</span>
+        <span class="n">ON</span> <span class="n">c</span><span class="o">.</span><span class="n">country_id</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">country_id</span>
+    <span class="n">JOIN</span> <span class="n">address</span> <span class="n">a</span>
+        <span class="n">ON</span> <span class="n">a</span><span class="o">.</span><span class="n">city_id</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">city_id</span>
+    <span class="n">JOIN</span> <span class="n">customer</span> <span class="n">cust</span>
+        <span class="n">ON</span> <span class="n">cust</span><span class="o">.</span><span class="n">address_id</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">address_id</span>
+    <span class="n">JOIN</span> <span class="n">rental</span> <span class="n">r</span>
+        <span class="n">ON</span> <span class="n">r</span><span class="o">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">cust</span><span class="o">.</span><span class="n">customer_id</span>
+    <span class="n">GROUP</span> <span class="n">BY</span> <span class="n">country</span>
+    <span class="n">ORDER</span> <span class="n">BY</span> <span class="n">rental_count</span> <span class="n">DESC</span>
+    <span class="n">LIMIT</span> <span class="mi">3</span><span class="p">;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<table>
+    <thead>
+        <tr>
+            <th>country</th>
+            <th>rental_count</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>India</td>
+            <td>1572</td>
+        </tr>
+        <tr>
+            <td>China</td>
+            <td>1426</td>
+        </tr>
+        <tr>
+            <td>United States</td>
+            <td>968</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="What-is-the-most-popular-film-category-in-each-country?">What is the most popular film category in each country?<a class="anchor-link" href="#What-is-the-most-popular-film-category-in-each-country?">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -14627,122 +14716,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%capture</span> --no-display
-<span class="o">%%</span><span class="n">sql</span>
-
-<span class="n">SELECT</span> <span class="o">*</span>
-    <span class="n">FROM</span> <span class="n">inventory</span>
-    <span class="n">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
-
-
-
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<table>
-    <thead>
-        <tr>
-            <th>inventory_id</th>
-            <th>film_id</th>
-            <th>store_id</th>
-            <th>last_update</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>1</td>
-            <td>1</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>1</td>
-            <td>1</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>1</td>
-            <td>1</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>1</td>
-            <td>2</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>6</td>
-            <td>1</td>
-            <td>2</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>1</td>
-            <td>2</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>1</td>
-            <td>2</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>9</td>
-            <td>2</td>
-            <td>2</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-        <tr>
-            <td>10</td>
-            <td>2</td>
-            <td>2</td>
-            <td>2006-02-15 10:09:17</td>
-        </tr>
-    </tbody>
-</table>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </div>
 </body>
 
