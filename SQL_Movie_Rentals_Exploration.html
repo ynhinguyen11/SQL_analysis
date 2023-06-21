@@ -14805,6 +14805,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%capture</span> --no-display
 <span class="o">%%</span><span class="n">sql</span>
+
 <span class="n">WITH</span>
     <span class="o">--</span> <span class="n">Create</span> <span class="n">table</span> <span class="n">of</span> <span class="n">each</span> <span class="n">category</span> <span class="n">count</span> <span class="n">per</span> <span class="n">country</span>
     <span class="n">category_per_country</span> <span class="n">AS</span> <span class="p">(</span>
@@ -17757,6 +17758,129 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[81]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%capture</span> --no-display
+<span class="o">%%</span><span class="n">sql</span>
+
+<span class="o">/*</span><span class="mi">2006</span> <span class="n">data</span> <span class="n">was</span> <span class="n">removed</span> <span class="kn">from</span> <span class="nn">result</span> <span class="ow">in</span> <span class="n">case</span> <span class="n">it</span> <span class="n">was</span> <span class="n">incomplete</span><span class="o">.*/</span>
+<span class="n">WITH</span> 
+    <span class="o">--</span> <span class="n">Create</span> <span class="n">table</span> <span class="n">of</span> <span class="n">the</span> <span class="n">customers</span> <span class="n">renting</span> <span class="n">movies</span> <span class="n">at</span> <span class="n">each</span> <span class="n">store</span> <span class="n">per</span> <span class="n">month</span>
+    <span class="n">customer_per_month</span> <span class="n">AS</span> <span class="p">(</span>
+        <span class="n">SELECT</span> <span class="n">DISTINCT</span> <span class="n">st</span><span class="o">.</span><span class="n">store_id</span><span class="p">,</span> <span class="n">DATE_TRUNC</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span><span class="n">r</span><span class="o">.</span><span class="n">rental_date</span><span class="p">)</span> <span class="n">rental_month</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">customer_id</span>
+            <span class="n">FROM</span> <span class="n">rental</span> <span class="n">r</span>
+            <span class="n">JOIN</span> <span class="n">payment</span> <span class="n">p</span>
+                <span class="n">ON</span> <span class="n">r</span><span class="o">.</span><span class="n">rental_id</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">rental_id</span>
+            <span class="n">JOIN</span> <span class="n">staff</span> <span class="n">s</span>
+                <span class="n">ON</span> <span class="n">p</span><span class="o">.</span><span class="n">staff_id</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">staff_id</span>
+            <span class="n">JOIN</span> <span class="n">store</span> <span class="n">st</span>
+                <span class="n">ON</span> <span class="n">s</span><span class="o">.</span><span class="n">store_id</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">store_id</span><span class="p">),</span>
+    <span class="o">--</span> <span class="n">Create</span> <span class="n">table</span> <span class="n">of</span> <span class="n">customer</span> <span class="n">count</span> <span class="n">at</span> <span class="n">each</span> <span class="n">store</span> <span class="n">per</span> <span class="n">month</span>
+    <span class="n">month_count</span> <span class="n">AS</span> <span class="p">(</span>
+        <span class="n">SELECT</span> <span class="n">store_id</span><span class="p">,</span> <span class="n">rental_month</span><span class="p">,</span> <span class="n">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="n">customer_count</span>
+            <span class="n">FROM</span> <span class="n">customer_per_month</span>
+            <span class="n">GROUP</span> <span class="n">BY</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="o">/*</span> <span class="n">Append</span> <span class="n">table</span> <span class="n">of</span> <span class="n">customer</span> <span class="n">percent</span> <span class="n">change</span> <span class="k">for</span> <span class="n">store</span> <span class="mi">2</span> <span class="n">to</span> <span class="n">store</span> <span class="mi">1</span> <span class="n">table</span><span class="o">.*/</span>
+<span class="o">--</span> <span class="n">Create</span> <span class="n">table</span> <span class="n">calculating</span> <span class="n">customer</span> <span class="n">percent</span> <span class="n">change</span> <span class="k">for</span> <span class="n">each</span> <span class="n">month</span> <span class="ow">in</span> <span class="n">store</span> <span class="mi">1</span>
+<span class="n">SELECT</span> <span class="n">store_id</span><span class="p">,</span>
+    <span class="n">DATE_PART</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="n">rental_month</span><span class="p">)</span><span class="o">||</span><span class="s1">&#39;-0&#39;</span><span class="o">||</span><span class="n">DATE_PART</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span><span class="n">rental_month</span><span class="p">)</span> <span class="n">AS</span> <span class="n">year_month</span><span class="p">,</span>
+    <span class="n">CASE</span> <span class="n">WHEN</span> <span class="p">(</span><span class="n">customer_count</span> <span class="o">-</span> <span class="n">LAG</span><span class="p">(</span><span class="n">customer_count</span><span class="p">)</span> <span class="n">OVER</span><span class="p">(</span><span class="n">ORDER</span> <span class="n">BY</span> <span class="n">rental_month</span><span class="p">))</span> <span class="n">IS</span> <span class="n">NULL</span>
+        <span class="n">THEN</span> <span class="mi">0</span>
+        <span class="n">ELSE</span> <span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">customer_count</span> <span class="o">-</span> <span class="n">LAG</span><span class="p">(</span><span class="n">customer_count</span><span class="p">)</span> <span class="n">OVER</span><span class="p">(</span><span class="n">ORDER</span> <span class="n">BY</span> <span class="n">rental_month</span><span class="p">))</span><span class="o">/</span><span class="n">customer_count</span> 
+        <span class="n">END</span> <span class="n">AS</span> <span class="n">customer_percent_change</span>
+    <span class="n">FROM</span> <span class="n">month_count</span>
+    <span class="n">WHERE</span> <span class="n">store_id</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">AND</span> <span class="p">(</span><span class="n">rental_month</span> <span class="n">BETWEEN</span> <span class="s1">&#39;2005-06-01&#39;</span> <span class="n">AND</span> <span class="s1">&#39;2006-01-01&#39;</span><span class="p">)</span>
+<span class="n">UNION</span> <span class="n">ALL</span>
+<span class="o">--</span> <span class="n">Create</span> <span class="n">table</span> <span class="n">calculating</span> <span class="n">customer</span> <span class="n">percent</span> <span class="n">change</span> <span class="k">for</span> <span class="n">each</span> <span class="n">month</span> <span class="ow">in</span> <span class="n">store</span> <span class="mi">2</span>
+<span class="n">SELECT</span> <span class="n">store_id</span><span class="p">,</span> 
+    <span class="n">DATE_PART</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span><span class="n">rental_month</span><span class="p">)</span><span class="o">||</span><span class="s1">&#39;-0&#39;</span><span class="o">||</span><span class="n">DATE_PART</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span><span class="n">rental_month</span><span class="p">)</span> <span class="n">AS</span> <span class="n">year_month</span><span class="p">,</span>
+    <span class="n">CASE</span> <span class="n">WHEN</span> <span class="p">(</span><span class="n">customer_count</span> <span class="o">-</span> <span class="n">LAG</span><span class="p">(</span><span class="n">customer_count</span><span class="p">)</span> <span class="n">OVER</span> <span class="p">(</span><span class="n">ORDER</span> <span class="n">BY</span> <span class="n">rental_month</span><span class="p">))</span> <span class="n">IS</span> <span class="n">NULL</span>
+        <span class="n">THEN</span> <span class="mi">0</span>
+        <span class="n">ELSE</span> <span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">customer_count</span> <span class="o">-</span> <span class="n">LAG</span><span class="p">(</span><span class="n">customer_count</span><span class="p">)</span> <span class="n">OVER</span><span class="p">(</span><span class="n">ORDER</span> <span class="n">BY</span> <span class="n">rental_month</span><span class="p">))</span><span class="o">/</span><span class="n">customer_count</span> 
+        <span class="n">END</span> <span class="n">AS</span> <span class="n">customer_percent_change</span>
+    <span class="n">FROM</span> <span class="n">month_count</span>
+    <span class="n">WHERE</span> <span class="n">store_id</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">AND</span> <span class="p">(</span><span class="n">rental_month</span> <span class="n">BETWEEN</span> <span class="s1">&#39;2005-06-01&#39;</span> <span class="n">AND</span> <span class="s1">&#39;2006-01-01&#39;</span><span class="p">)</span>
+    <span class="n">ORDER</span> <span class="n">BY</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[81]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<table>
+    <thead>
+        <tr>
+            <th>store_id</th>
+            <th>year_month</th>
+            <th>customer_percent_change</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>2005-06</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2005-07</td>
+            <td>24</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2005-08</td>
+            <td>-1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2005-06</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2005-07</td>
+            <td>23</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2005-08</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
