@@ -14600,7 +14600,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id='intro'></a></p>
 <h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This project will use SQL to explore a relational database related to movie rentals to gain an understanding of the customer base.</p>
 <h3 id="Database-Description">Database Description<a class="anchor-link" href="#Database-Description">&#182;</a></h3><p>The database used is Sakila DVD Rental database. It is a PostgreSQL sample database from the PostgreSQL tutorial. The database represents the business processes of a DVD rental store. There are 15 tables in the database. An ER model of the database is provided below.</p>
-<blockquote><h4 id="What-kind-of-data-each-table-holds:">What kind of data each table holds:<a class="anchor-link" href="#What-kind-of-data-each-table-holds:">&#182;</a></h4><ul>
+<p><img src="https://www.postgresqltutorial.com/wp-content/uploads/2018/03/dvd-rental-sample-database-diagram.png" alt="DVD Rental ER Model"></p>
+<h4 id="What-kind-of-data-each-table-holds:">What kind of data each table holds:<a class="anchor-link" href="#What-kind-of-data-each-table-holds:">&#182;</a></h4><ul>
 <li>actor – stores actors data including first name and last name.</li>
 <li>film – stores film data such as title, release year, length, rating, etc.</li>
 <li>film_actor – stores the relationships between films and actors.</li>
@@ -14616,19 +14617,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li>city – stores city names.</li>
 <li>country – stores country names.</li>
 </ul>
-</blockquote>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img src="https://www.postgresqltutorial.com/wp-content/uploads/2018/03/dvd-rental-sample-database-diagram.png" alt="DVD Rental ER Model"></p>
+<h4 id="Notes">Notes<a class="anchor-link" href="#Notes">&#182;</a></h4><ul>
+<li>Australia was removed from the result because there are no customer with an Australian address.</li>
+<li>Database contains only 2007 payments when rentail dates are all in 2005 and 2006.</li>
+</ul>
 
 </div>
 </div>
@@ -14641,8 +14633,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id='mostrent'></a></p>
-<h2 id="What-are-the-top-3-countries-that-rent-the-most-movies?">What are the top 3 countries that rent the most movies?<a class="anchor-link" href="#What-are-the-top-3-countries-that-rent-the-most-movies?">&#182;</a></h2><p>Australia was removed from the result because there are no customer with an Australian address.</p>
-
+<h2 id="What-are-the-top-3-countries-that-rent-the-most-movies?">What are the top 3 countries that rent the most movies?<a class="anchor-link" href="#What-are-the-top-3-countries-that-rent-the-most-movies?">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -15083,8 +15074,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id='avgpayment'></a></p>
-<h2 id="What-is-the-average-amount-(usd)-customers-pay-per-month-at-each-store?">What is the average amount (usd) customers pay per month at each store?<a class="anchor-link" href="#What-is-the-average-amount-(usd)-customers-pay-per-month-at-each-store?">&#182;</a></h2><p>All payments were made in 2007 even though customer rented in 2005 and 2006. Some movies were returned in 2005 and the rest was not returned.</p>
-
+<h2 id="What-is-the-average-amount-(usd)-customers-pay-per-month-at-each-store?">What is the average amount (usd) customers pay per month at each store?<a class="anchor-link" href="#What-is-the-average-amount-(usd)-customers-pay-per-month-at-each-store?">&#182;</a></h2>
 </div>
 </div>
 </div>
